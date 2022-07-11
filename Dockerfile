@@ -4,12 +4,12 @@ FROM node:lts AS development
 WORKDIR /app
 #
 COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
-# Same as npm install
+# COPY package-lock.json /app/package-lock.json
+RUN npm install --production
 RUN npm ci
 COPY . .
 # ENV CI=true
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
 FROM development AS build
 RUN npm run build
 
