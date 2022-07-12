@@ -17,6 +17,7 @@ export default function Request2() {
         //Xử lý thành công
         useRequest2.then((result) => {
             // alert('Vui long cho 2s')
+            // console.log(result.data)
             setPost2(result.data);
         })
         //Xử lý thất bại

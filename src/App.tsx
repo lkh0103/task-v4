@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { createRef, forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Routes, Route, RouteObject, useRoutes } from "react-router-dom";
 import './App.css';
 import LoggerProvider from './components/LoggerProvider';
+import execApi from './hooks/useRequest';
 import useRequest from './hooks/useRequest';
+import useTitle from './hooks/useTitle';
 import Course from './layouts/Course';
 import Courses from './layouts/Courses';
 import CoursesIndex from './layouts/CoursesIndex';
 import Home from './layouts/Home';
 import Layout from './layouts/Layout';
 import Nomatch from './layouts/Nomatch';
-import Navigation from './page/Navigation';
-import Newtitle from './page/Newtitle';
-import Request from './page/Request';
-// import Request2 from './page/Request2';
+import Navigation from './pages/Navigation';
+import Newtitle from './pages/Newtitle';
+import Request from './pages/Request';
+import Request2 from './pages/Request2';
 
 function App() {
 
@@ -22,12 +24,26 @@ function App() {
     loadUser()
   }, [])
 
+  useTitle('React project')
 
   const loadUser = () => {
-    api('https://api.github.com/users')
-      .then((e) => { console.log('success') })
-      .catch((e) => { console.log('err') })
+    api('https://jsonplaceholder.typicode.com/posts')
+      .then((e) => {
+        console.log('success', e)
+      })
+      .catch(console.error)
   }
+
+  // createRef()
+  // useRef()
+
+  // const labels = useMemo(() => {
+
+  // }, [])
+
+  // const x = useCallback(() => {
+  //   return <select></select>
+  // }, [labels])
 
   const routes: RouteObject[] = [
     {
@@ -50,17 +66,17 @@ function App() {
 
   const element = useRoutes(routes);
 
-  if (loading) return <div>Loading</div>
+  // if (loading) return <div>Loading</div>
 
 
   return (
-    <LoggerProvider handler={(args: any) => console.log('xxxx', ...args)}>
+    <LoggerProvider handler={(args: any) => console.log('Lỗi', ...args)}>
       <div className="App">
         <Routes>
           <Route path="/" element={<Navigation />} />
           <Route path="title" element={<Newtitle />} />
           <Route path='/request' element={<Request />} />
-          {/* <Route path='/request2' element={Request2}/> */}
+          <Route path='/request2' element={<Request2 />} />
         </Routes>
 
         <h1>Route Objects Example</h1>

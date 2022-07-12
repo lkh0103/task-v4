@@ -33,25 +33,43 @@ export const useRequest = () => {
     return request
 }
 
-// import React from "react";
 // import axios from "axios";
+// import { AxiosRequestConfig } from "axios";
 
 // const API = axios.create({
-//     baseURL: API_BASE_URL,
-//     headers: { Accept: EContentType.JSON, ...contentType(EContentType.JSON) },
+//     baseURL: '',
+//     headers: {
+//         // Accept: EContentType.JSON, 
+//         // ...contentType(EContentType.JSON) 
+//     },
 //     withCredentials: true
 // });
 
 // export interface IMethod {
 //     [method: string]: string
 // }
-// const EMethod: IMethod = {
-//     GET: 'GET',
-
+// export enum EMethod {
+//     GET = "get",
+//     POST = "post",
+//     PUT = "put",
+//     PATCH = "patch",
+//     HEAD = "head",
+//     DELETE = "delete"
 // }
 
+// export interface IApiResponse<T> {
+//     success: boolean;
+//     data: T | null;
+//     errors: any;
+//     headers?: any;
+// }
+
+// export type IResponse<T> = Promise<IApiResponse<T>>;
+
+
+
 // export default function execApi<T>(
-//     method: string,
+//     method: any,
 //     uri: string,
 //     data?: any,
 //     headers?: any,
@@ -71,18 +89,17 @@ export const useRequest = () => {
 //         }
 //     }
 
-//     Object.assign(configs, { headers: configs.headers || {} });
-//     const get_token = getToken()
 
-//     !configs.headers.Authorization
-//         && Object.assign(configs.headers, getAuthHeader(get_token))
+//     //add token in headers
+//     // Object.assign(configs, { headers: configs.headers || {} });
+//     // let get_token = getToken()
+
+//     // !configs.headers.Authorization
+//     // && Object.assign(configs.headers, getAuthHeader(get_token))
 //     // && Object.assign(configs.headers, getAuthHeader('MTM0NDo0ZjIwN2M3Njg4ZWExNTdkNWIxNzU2NDRlOTQ5YTM3YTVlNjA2MTVm'))
 
 //     return API.request(configs)
 //         .then((response: any) => {
-//             if ("user-token" in response.headers) {
-
-//             }
 //             const result: any = {
 //                 data: null,
 //                 success: false,
@@ -115,20 +132,20 @@ export const useRequest = () => {
 //                         result1.current_page = response.data.current_page ?? 1;
 //                     }
 //                 } else {
-//                     result.errors = response.data.errors ?? ON_RESPONSE_ERROR;
+//                     result.errors = response.data.errors ?? 'ON_RESPONSE_ERROR';
 //                 }
 //             } catch (e) {
-//                 result.errors = ON_PARSE_ERROR;
+//                 result.errors = 'ON_PARSE_ERROR';
 //             }
 
-//             return hasPaging ? { ...result1, ...result } as IApiPaging<T> : result;
+//             return hasPaging ? { ...result1, ...result } as any : result;
 //         })
 //         .catch((error) => {
-
+//             // 2 type of error (call to server and sv reply error, client has no internet)
 //             if (error.response && error.response.data) {
 
 //                 if (Math.floor(error.response.status / 500) === 1) {
-//                     showNotification({ type: "error", message: translate('MAINTEN_SYSTEM'), title: 'Error' });
+//                     // showNotification ({type: "error", message: translate('MAINTEN_SYSTEM'), title: 'Error'});
 //                 }
 
 //                 const response = error.response.data;
@@ -137,52 +154,105 @@ export const useRequest = () => {
 
 //                 //check error code 
 //                 if (response?.error_code && response?.status_code !== 403) {
-//                     let { error_code, description } = response
+//                     const { error_code, description } = response
 //                     // kiểm tra reload page
-//                     if (error_code in CONSTANT_ERROR_CODE.LOAD_PAGE) {
-//                         showNotification({ type: "error", message: translate(CONSTANT_LOAD_PAGE[error_code]), title: 'Error' });
-//                         setTimeout(reloadToLogin, 3000);
-//                     }
-//                     if (error_code in CONSTANT_ERROR_CODE.MESSAGE_ERROR_CODE) {
-//                         showNotification({ type: "error", message: translate(error_code), title: 'Error' });
-//                     } else {
-//                         showNotification({ type: "error", message: translate('MAINTEN_SYSTEM'), title: 'Error' });
-//                     }
+//                     // if(error_code in CONSTANT_ERROR_CODE.LOAD_PAGE){
+//                     // showNotification({type: "error", message: translate(CONSTANT_LOAD_PAGE[error_code]), title: 'Error'});
+//                     // setTimeout(reloadToLogin,3000 );
+//                     // }
+//                     // if(error_code in CONSTANT_ERROR_CODE.MESSAGE_ERROR_CODE){
+//                     // showNotification({type: "error", message: translate(error_code), title: 'Error'});
+//                     // }else{
+//                     // showNotification({type: "error", message: translate('MAINTEN_SYSTEM'), title: 'Error'});
+//                     // }
 //                 }
 
 //                 return response;
-//             } else {
-//                 showNotification({ type: "error", message: translate('MAINTEN_SYSTEM'), title: 'Error' });
-//                 return {
-//                     success: false,
-//                     data: null,
-//                     errors: ON_FETCH_ERROR,
-//                     status_code: 500
-//                 };
 //             }
 //         });
+
+
 // }
 
-// export default useRequest;
-// // import { useState, useEffect } from "react";
 
-// // function useRequest(url: RequestInfo | URL) {
-// // const [data, setData] = useState([]);
-// // const [isLoading, setIsLoading] = useState(false);
-// // const [error, setError] = useState();
-// // const [method, setMethod]=useState(String)
+// export function apiGet<T>(
+//     uri: string,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     return execApi<T>(EMethod.GET, uri, undefined, headers, configs);
+// }
 
-// // useEffect(() => {
-// // const loadData = async () => {
-// // setIsLoading(true);
-// // const response = await fetch(url);
-// // const data = await response.json();
-// // setData(data);
-// // setIsLoading(false);
+// export function apiPost<T>(
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     return execApi(EMethod.POST, uri, data, headers, configs);
+// }
 
-// // };
-// // loadData();
-// // }, []);
+// export function apiPut<T>(
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     return execApi(EMethod.PUT, uri, data, headers, configs);
+// }
 
-// // return [data, isLoading];
-// // }
+// export function apiPatch<T>(
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     return execApi(EMethod.PATCH, uri, data, headers, configs);
+// }
+
+// export function apiDelete<T>(
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ): IResponse<T> {
+//     return execApi(EMethod.PATCH, uri, data, headers, configs);
+// }
+
+// export function apiHead<T>(
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     return execApi(EMethod.HEAD, uri, data, headers, configs);
+// }
+
+// export function api<T>(
+//     method: EMethod,
+//     uri: string,
+//     data?: any,
+//     headers?: any,
+//     configs?: AxiosRequestConfig
+// ) {
+//     switch (method) {
+//         case EMethod.POST:
+//             return apiPost<T>(uri, data, headers, configs);
+
+//         case EMethod.PUT:
+//             return apiPut(uri, data, headers, configs);
+
+//         case EMethod.PATCH:
+//             return apiPatch(uri, data, headers, configs);
+
+//         case EMethod.HEAD:
+//             return apiHead(uri, data, headers, configs);
+
+//         case EMethod.DELETE:
+//             return apiDelete(uri, data, headers, configs);
+
+//         default:
+//             return apiGet<T>(uri, headers, configs);
+//     }
+// }
+

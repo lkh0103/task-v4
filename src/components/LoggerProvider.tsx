@@ -15,14 +15,7 @@ export default function LoggerProvider(props: PropsWithChildren<LoggerProviderPr
 
     useEffect(() => {
         const listener = (event: ErrorEvent) => {
-            const {
-                message,
-                filename,
-                colno,
-                lineno,
-                error
-            } = event
-
+            const { message, filename, colno, lineno, error } = event
             const string = message.toLowerCase();
             const substring = 'script error';
             if (string.indexOf(substring) > -1) {
@@ -37,14 +30,14 @@ export default function LoggerProvider(props: PropsWithChildren<LoggerProviderPr
                 ].join(' - ');
 
                 if (typeof props.handler === 'function') {
-                    props.handler(errorMessage)    
-                    setLastError(errorMessage)                
+                    props.handler(errorMessage)
+                    setLastError(errorMessage)
                 }
             }
         }
-        
+
         window.addEventListener('error', listener)
-        
+
         return () => {
             window.removeEventListener('error', listener)
         }
@@ -57,7 +50,7 @@ export default function LoggerProvider(props: PropsWithChildren<LoggerProviderPr
     }
 
     return (
-        <LoggerContext.Provider value={ contextValue }>
+        <LoggerContext.Provider value={contextValue}>
             {props.children}
         </LoggerContext.Provider>
     )
