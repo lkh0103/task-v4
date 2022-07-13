@@ -10,28 +10,45 @@ const createRequest = (options: AxiosRequestConfig) => {
 
 export default function useRequestWithState() {
     const [loading, setLoading] = useState(false)
-
+    const [error, setError] = useState<string>('')
     const request = createRequest({})
 
-    const api = (url: string) => {
+    const api = (url: string, param: string) => {
         setLoading(true)
-        return request(url)
+        return request(url + param)
             .then(data => {
+                console.log(data.config)
                 return data.data
+            })
+            .catch((e) => {
+                if (e.response) {
+                    // Request made and server responded
+                    console.log(e.response.data);
+                    console.log(e.response.status);
+                    console.log(e.response.headers);
+                } else if (e.request) {
+                    // The request was made but no response was received
+                    console.log(e.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', e.message);
+                }
+                setError(e.message)
             })
             .finally(() => setLoading(false))
     }
 
     return {
         loading,
-        api
+        api,
+        error
     }
 }
 
-export const useRequest = () => {
-    const request = createRequest({})
-    return request
-}
+// export const useRequest = () => {
+//     const request = createRequest({})
+//     return request
+// }
 
 // import axios from "axios";
 // import { AxiosRequestConfig } from "axios";
@@ -39,8 +56,8 @@ export const useRequest = () => {
 // const API = axios.create({
 //     baseURL: '',
 //     headers: {
-//         // Accept: EContentType.JSON, 
-//         // ...contentType(EContentType.JSON) 
+//         // Accept: EContentType.JSON,
+//         // ...contentType(EContentType.JSON)
 //     },
 //     withCredentials: true
 // });
@@ -152,7 +169,7 @@ export const useRequest = () => {
 //                 response.success = false;
 //                 response.status_code = error.response.status;
 
-//                 //check error code 
+//                 //check error code
 //                 if (response?.error_code && response?.status_code !== 403) {
 //                     const { error_code, description } = response
 //                     // kiểm tra reload page
